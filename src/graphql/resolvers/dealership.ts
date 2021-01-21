@@ -12,8 +12,6 @@ export default class {
     return DealershipModel.create({
       ...model,
       id: uuidv4(),
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
   }
 
@@ -22,7 +20,7 @@ export default class {
   @Mutation(() => Dealership)
   async updateDealership(@Arg("model") model: DealershipInput) {
     const dealershipToUpdate = await DealershipModel.findByPk(model.id);
-    return dealershipToUpdate.update({ ...model, updatedAt: new Date() });
+    return dealershipToUpdate.update({ ...model });
   }
 
   // Upsert for dealership
@@ -66,16 +64,13 @@ export default class {
     return DealershipModel.findByPk(id);
   }
 
-  // FindOne where SOMETHING
+  // FindOne where location
 
   @Query(() => [Dealership])
-  findDealershipByAnyField(@Arg("model") model: DealershipInput) {
+  findDealershipByLocation(@Arg("location") location: string) {
     return DealershipModel.findOne({
       where: {
-        id: model.id,
-        name: model.name,
-        location: model.location,
-        phoneNumber: model.phoneNumber,
+        location,
       },
     });
   }

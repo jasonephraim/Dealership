@@ -3,6 +3,7 @@ import Employee, { EmployeeInput } from "../schemas/employee";
 import EmployeeModel from "../../db/models/employee";
 import CarModel from "../../db/models/car";
 import { v4 as uuidv4 } from "uuid";
+import { where } from "sequelize";
 
 @Resolver((of) => Employee)
 export default class {
@@ -10,7 +11,10 @@ export default class {
 
   @Mutation(() => Employee)
   createEmployee(@Arg("model") model: EmployeeInput) {
-    return EmployeeModel.create({ ...model, id: uuidv4() });
+    return EmployeeModel.create({
+      ...model,
+      id: uuidv4(),
+    });
   }
 
   // Update Employee
@@ -18,7 +22,7 @@ export default class {
   @Mutation(() => Employee)
   async updateEmployee(@Arg("model") model: EmployeeInput) {
     const employeeToUpdate = await EmployeeModel.findByPk(model.id);
-    return employeeToUpdate.update({ ...model, updatedAt: new Date() });
+    return employeeToUpdate.update({ ...model });
   }
 
   // Upsert Employee
@@ -35,7 +39,7 @@ export default class {
     }
     await EmployeeModel.upsert({
       ...model,
-      updatedAt: new Date()
+      updatedAt: new Date(),
     });
     return EmployeeModel.findByPk(model.id);
   }
@@ -73,27 +77,23 @@ export default class {
     return EmployeeModel.findByPk(id);
   }
 
-  // FindAll Employees specializing in new cars <----------------- map employee ID of each 
+  // FindAll Employees specializing in new cars <----------------- map employee ID of each
+
+  // get all employees, get all cars sold - > split to object (employee, #new cars, #used cars). compare and return array
 
   @Query(() => [Employee])
   async findAllEmoloyeesSpecializingInNewCars() {
-    const newCarsSoldByEmployee = await CarModel.findAll({
+    const allNewCarsSold = await CarModel.findAll({
       where: {
+        sold: true,
         isNew: true,
-        sold: true,
       },
     });
-    const usedCarsSoldByEmployee = await CarModel.findAll({
-      where: {
-        isNew: false,
-        sold: true,
-      },
-    });
-    return EmployeeModel.findAll({
-      where: {
-        [newCarsSoldByEmployee.employeeID]
-      }
-    })
+    const EmoloyeesSpecializingInNewCars = [
+      ...new Set(allNewCarsSold.map((item) => item.employeeID)),
+    ];
+
+    return EmoloyeesSpecializingInNewCars;
   }
 }
 
@@ -102,4 +102,3 @@ export default class {
 // FindAll where employee specialty is used cars
 
 // FindAll where employee specialty is used cars at X dealership
-

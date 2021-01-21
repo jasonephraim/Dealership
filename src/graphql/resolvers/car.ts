@@ -1,8 +1,8 @@
-import { DealershipInput } from "./../schemas/dealership";
 import { Query, Resolver, Arg, Mutation } from "type-graphql";
 import Car, { CarInput } from "../schemas/car";
 import CarModel from "../../db/models/car";
 import { v4 as uuidv4 } from "uuid";
+import { Op } from "sequelize";
 
 @Resolver((of) => Car)
 export default class {
@@ -10,7 +10,10 @@ export default class {
 
   // Create Car
   createCar(@Arg("model") model: CarInput) {
-    return CarModel.create({ id: uuidv4(), ...model });
+    return CarModel.create({
+      ...model,
+      id: uuidv4(),
+    });
   }
 
   // Update Car
@@ -18,7 +21,7 @@ export default class {
   @Mutation(() => Car)
   async updateCar(@Arg("model") model: CarInput) {
     const carToUpdate = await CarModel.findByPk(model.id);
-    return carToUpdate.update({ ...model, updatedAt: new Date() });
+    return carToUpdate.update({ ...model });
   }
 
   // Upsert Car
@@ -100,14 +103,10 @@ export default class {
 
   @Query(() => [Car])
   async findUnsoldCarsLessThanPrice(@Arg("price") price: number) {
-    const availableCars = await CarModel.findAll({
+    return CarModel.findAll({
       where: {
         sold: false,
-      },
-    });
-    return availableCars.findAll({
-      where: {
-        price > availableCars.price,
+        price: { [Op.lt]: price },
       },
     });
   }
@@ -142,7 +141,7 @@ export default class {
   findUnsoldCarsByMileage(@Arg("miles") miles: number) {
     return CarModel.findAll({
       where: {
-        miles: { miles > CarModel.miles },
+        miles: { [Op.lt]: miles },
         sold: false,
       },
     });
