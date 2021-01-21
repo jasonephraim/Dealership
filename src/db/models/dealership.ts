@@ -6,13 +6,14 @@ import {
   PrimaryKey,
   AllowNull,
   IsUUID,
+  CreatedAt,
+  UpdatedAt,
 } from "sequelize-typescript";
 
 @Table({
   modelName: "Dealership",
   tableName: "Dealerships",
 })
-
 export default class Dealership extends Model<Dealership> {
   @IsUUID(4)
   @PrimaryKey
@@ -32,4 +33,14 @@ export default class Dealership extends Model<Dealership> {
   @AllowNull(false)
   @Column
   phoneNumber: number;
+
+  @AllowNull(false)
+  @CreatedAt
+  @Column
+  createdAt: Date;
+
+  @AllowNull(false)
+  @UpdatedAt
+  @Column
+  updatedAt: Date;
 }

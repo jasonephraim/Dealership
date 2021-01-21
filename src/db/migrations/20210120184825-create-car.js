@@ -11,7 +11,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       doors: {
-        type: Sequelize.NUMBER,
+        type: Sequelize.INTEGER,
       },
       automatic: {
         type: Sequelize.BOOLEAN,
@@ -20,10 +20,10 @@ module.exports = {
         type: Sequelize.BOOLEAN,
       },
       price: {
-        type: Sequelize.NUMBER,
+        type: Sequelize.INTEGER,
       },
       miles: {
-        type: Sequelize.NUMBER,
+        type: Sequelize.INTEGER,
       },
       dealershipID: {
         type: Sequelize.STRING,

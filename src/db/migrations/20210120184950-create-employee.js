@@ -14,10 +14,10 @@ module.exports = {
         type: Sequelize.STRING,
       },
       age: {
-        type: Sequelize.NUMBER,
+        type: Sequelize.INTEGER,
       },
       phoneNumber: {
-        type: Sequelize.NUMBER,
+        type: Sequelize.INTEGER,
       },
       dealershipID: {
         type: Sequelize.STRING,

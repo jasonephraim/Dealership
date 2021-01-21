@@ -6,6 +6,8 @@ import {
   PrimaryKey,
   AllowNull,
   IsUUID,
+  CreatedAt,
+  UpdatedAt,
 } from "sequelize-typescript";
 
 @Table({
@@ -35,4 +37,14 @@ export default class Client extends Model<Client> {
   @AllowNull(false)
   @Column
   lookingForNewCar: boolean;
+
+  @AllowNull(false)
+  @CreatedAt
+  @Column
+  createdAt: Date;
+
+  @AllowNull(false)
+  @UpdatedAt
+  @Column
+  updatedAt: Date;
 }

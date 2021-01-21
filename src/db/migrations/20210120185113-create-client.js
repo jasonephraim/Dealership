@@ -14,7 +14,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       phoneNumber: {
-        type: Sequelize.NUMBER,
+        type: Sequelize.INTEGER,
       },
       lookingForNewCar: {
         type: Sequelize.BOOLEAN,
