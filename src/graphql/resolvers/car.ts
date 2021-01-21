@@ -99,11 +99,15 @@ export default class {
   // Find all Cars where price is less than X and not sold
 
   @Query(() => [Car])
-  findUnsoldCarsLessThanPrice(@Arg("price") price: number) {
-    return CarModel.findAll({
+  async findUnsoldCarsLessThanPrice(@Arg("price") price: number) {
+    const availableCars = await CarModel.findAll({
       where: {
-        miles: { price > CarModel.price },
         sold: false,
+      },
+    });
+    return availableCars.findAll({
+      where: {
+        price > availableCars.price,
       },
     });
   }

@@ -1,4 +1,3 @@
-import { DealershipInput } from "../schemas/dealership";
 import { Query, Resolver, Arg, Mutation } from "type-graphql";
 import Employee, { EmployeeInput } from "../schemas/employee";
 import EmployeeModel from "../../db/models/employee";
