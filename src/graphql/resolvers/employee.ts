@@ -84,13 +84,15 @@ export default class {
     const newCarEmployees = [];
 
     allEmployees.forEach(async (employee) => {
-      const newCars = await CarModel.findAll({
-        where: { isNew: true, employeeID: employee.id },
+      const employeeCars = await CarModel.findAll({
+        where: { employeeID: employee.id },
       });
-      const usedCars = await CarModel.findAll({
-        where: { isNew: false, employeeID: employee.id },
+      let employeeNewCars = 0;
+      let employeeUsedCars = 0;
+      employeeCars.forEach((car) => {
+        car.isNew === false ? ++employeeUsedCars : ++employeeNewCars;
       });
-      if (newCars > usedCars) {
+      if (employeeNewCars > employeeUsedCars) {
         newCarEmployees.push(employee);
       }
     });
@@ -112,13 +114,15 @@ export default class {
     const newCarEmployees = [];
 
     allEmployees.forEach(async (employee) => {
-      const newCars = await CarModel.findAll({
-        where: { isNew: true, employeeID: employee.id },
+      const employeeCars = await CarModel.findAll({
+        where: { employeeID: employee.id },
       });
-      const usedCars = await CarModel.findAll({
-        where: { isNew: false, employeeID: employee.id },
+      let employeeNewCars = 0;
+      let employeeUsedCars = 0;
+      employeeCars.forEach((car) => {
+        car.isNew === false ? ++employeeUsedCars : ++employeeNewCars;
       });
-      if (newCars > usedCars) {
+      if (employeeNewCars > employeeUsedCars) {
         newCarEmployees.push(employee);
       }
     });
@@ -134,13 +138,15 @@ export default class {
     const usedCarEmployees = [];
 
     allEmployees.forEach(async (employee) => {
-      const newCars = await CarModel.findAll({
-        where: { isNew: true, employeeID: employee.id },
+      const employeeCars = await CarModel.findAll({
+        where: { employeeID: employee.id },
       });
-      const usedCars = await CarModel.findAll({
-        where: { isNew: false, employeeID: employee.id },
+      let employeeNewCars = 0;
+      let employeeUsedCars = 0;
+      employeeCars.forEach((car) => {
+        car.isNew === false ? ++employeeUsedCars : ++employeeNewCars;
       });
-      if (newCars < usedCars) {
+      if (employeeNewCars < employeeUsedCars) {
         usedCarEmployees.push(employee);
       }
     });
@@ -162,13 +168,15 @@ export default class {
     const usedCarEmployees = [];
 
     allEmployees.forEach(async (employee) => {
-      const newCars = await CarModel.findAll({
-        where: { isNew: true, employeeID: employee.id },
+      const employeeCars = await CarModel.findAll({
+        where: { employeeID: employee.id },
       });
-      const usedCars = await CarModel.findAll({
-        where: { isNew: false, employeeID: employee.id },
+      let employeeNewCars = 0;
+      let employeeUsedCars = 0;
+      employeeCars.forEach((car) => {
+        car.isNew === false ? ++employeeUsedCars : ++employeeNewCars;
       });
-      if (newCars < usedCars) {
+      if (employeeNewCars < employeeUsedCars) {
         usedCarEmployees.push(employee);
       }
     });
