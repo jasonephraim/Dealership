@@ -3,7 +3,6 @@ import Employee, { EmployeeInput } from "../schemas/employee";
 import EmployeeModel from "../../db/models/employee";
 import CarModel from "../../db/models/car";
 import { v4 as uuidv4 } from "uuid";
-import { where } from "sequelize";
 
 @Resolver((of) => Employee)
 export default class {
@@ -77,28 +76,103 @@ export default class {
     return EmployeeModel.findByPk(id);
   }
 
-  // FindAll Employees specializing in new cars <----------------- map employee ID of each
-
-  // get all employees, get all cars sold - > split to object (employee, #new cars, #used cars). compare and return array
+  // FindAll Employees specializing in new cars
 
   @Query(() => [Employee])
   async findAllEmoloyeesSpecializingInNewCars() {
-    const allNewCarsSold = await CarModel.findAll({
+    const allEmployees = await EmployeeModel.findAll();
+    const newCarEmployees = [];
+
+    allEmployees.forEach(async (employee) => {
+      const newCars = await CarModel.findAll({
+        where: { isNew: true, employeeID: employee.id },
+      });
+      const usedCars = await CarModel.findAll({
+        where: { isNew: false, employeeID: employee.id },
+      });
+      if (newCars > usedCars) {
+        newCarEmployees.push(employee);
+      }
+    });
+
+    return newCarEmployees;
+  }
+
+  // FindAll where employee specialty is new cars at X dealership
+
+  @Query(() => [Employee])
+  async findAllEmoloyeesSpecializingInNewCarsAtDealership(
+    @Arg("dealershipID") dealershipID: string
+  ) {
+    const allEmployees = await EmployeeModel.findAll({
       where: {
-        sold: true,
-        isNew: true,
+        dealershipID,
       },
     });
-    const EmoloyeesSpecializingInNewCars = [
-      ...new Set(allNewCarsSold.map((item) => item.employeeID)),
-    ];
+    const newCarEmployees = [];
 
-    return EmoloyeesSpecializingInNewCars;
+    allEmployees.forEach(async (employee) => {
+      const newCars = await CarModel.findAll({
+        where: { isNew: true, employeeID: employee.id },
+      });
+      const usedCars = await CarModel.findAll({
+        where: { isNew: false, employeeID: employee.id },
+      });
+      if (newCars > usedCars) {
+        newCarEmployees.push(employee);
+      }
+    });
+
+    return newCarEmployees;
+  }
+
+  // FindAll where employee specialty is used cars
+
+  @Query(() => [Employee])
+  async findAllEmoloyeesSpecializingInUsedCars() {
+    const allEmployees = await EmployeeModel.findAll();
+    const usedCarEmployees = [];
+
+    allEmployees.forEach(async (employee) => {
+      const newCars = await CarModel.findAll({
+        where: { isNew: true, employeeID: employee.id },
+      });
+      const usedCars = await CarModel.findAll({
+        where: { isNew: false, employeeID: employee.id },
+      });
+      if (newCars < usedCars) {
+        usedCarEmployees.push(employee);
+      }
+    });
+
+    return usedCarEmployees;
+  }
+
+  // FindAll where employee specialty is used cars at X dealership
+
+  @Query(() => [Employee])
+  async findAllEmoloyeesSpecializingInUsedCarsAtDealership(
+    @Arg("dealershipID") dealershipID: string
+  ) {
+    const allEmployees = await EmployeeModel.findAll({
+      where: {
+        dealershipID,
+      },
+    });
+    const usedCarEmployees = [];
+
+    allEmployees.forEach(async (employee) => {
+      const newCars = await CarModel.findAll({
+        where: { isNew: true, employeeID: employee.id },
+      });
+      const usedCars = await CarModel.findAll({
+        where: { isNew: false, employeeID: employee.id },
+      });
+      if (newCars < usedCars) {
+        usedCarEmployees.push(employee);
+      }
+    });
+
+    return usedCarEmployees;
   }
 }
-
-// FindAll where employee specialty is new cars at X dealership
-
-// FindAll where employee specialty is used cars
-
-// FindAll where employee specialty is used cars at X dealership

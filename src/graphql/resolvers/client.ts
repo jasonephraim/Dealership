@@ -3,7 +3,6 @@ import Client, { ClientInput } from "../schemas/Client";
 import ClientModel from "../../db/models/Client";
 import CarModel from "../../db/models/car";
 import { v4 as uuidv4 } from "uuid";
-import { where } from "sequelize";
 
 @Resolver((of) => Client)
 export default class {
@@ -59,7 +58,20 @@ export default class {
     return ClientModel.findAll();
   }
 
-  // FindAll Clients at Dealership X <--------------------
+  // FindAll Clients at Dealership X
+
+  @Query(() => [Client])
+  async findAllClientsAtDealership(@Arg("dealershipID") dealershipID: string) {
+    const carsSoldByDealer = await CarModel.findAll({
+      where: {
+        dealershipID,
+      },
+    });
+    const clientsOfDealership = [
+      ...new Set(carsSoldByDealer.map((item) => item.clientID)),
+    ];
+    return clientsOfDealership;
+  }
 
   // FindOneByPK Client
 
